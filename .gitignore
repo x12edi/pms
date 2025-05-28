@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/PMS.Application/bin/Debug/net8.0
+/PMS.Application/obj
+/PMS.Domain/bin/Debug/net8.0
+/PMS.Domain/obj
+/PMS.Infrastructure/bin/Debug/net8.0
+/PMS.Infrastructure/obj
+/PMS.Web/bin/Debug/net8.0
+/PMS.Web/obj

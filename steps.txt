@@ -1,0 +1,74 @@
+﻿* dotnet new sln -n PMS
+* dotnet new mvc -n PMS.Web
+* dotnet new classlib -n PMS.Domain
+* dotnet new classlib -n PMS.Infrastructure
+* dotnet new classlib -n PMS.Application
+
+* dotnet sln add PMS.Web/PMS.Web.csproj
+* dotnet sln add PMS.Domain/PMS.Domain.csproj
+* dotnet sln add PMS.Infrastructure/PMS.Infrastructure.csproj
+* dotnet sln add PMS.Application/PMS.Application.csproj
+
+# Web depends on Application
+* dotnet add PMS.Web reference PMS.Application
+* dotnet add PMS.Web reference PMS.Infrastructure
+* dotnet add PMS.Web package Microsoft.EntityFrameworkCore.Design
+
+# Application depends on Infrastructure + Domain
+* dotnet add PMS.Application reference PMS.Infrastructure
+* dotnet add PMS.Application reference PMS.Domain
+
+# Infrastructure depends on Domain
+dotnet add PMS.Infrastructure reference PMS.Domain
+dotnet add PMS.Infrastructure package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add PMS.Infrastructure package Microsoft.EntityFrameworkCore.Tools
+
+-----------------------------------------------------
+PMS/
+├── PMS.sln
+├── PMS.Domain/
+│   ├── Entities/
+│   │   ├── Portfolio.cs
+│   │   ├── Client.cs
+│   │   ├── Asset.cs
+│   │   ├── Holding.cs
+│   │   ├── Transaction.cs
+│   │   ├── Performance.cs
+│   │   ├── Benchmark.cs
+│   │   ├── Account.cs
+│   │   ├── Goal.cs
+│   │   ├── Allocation.cs
+│   │   ├── User.cs
+│   │   ├── Report.cs
+│   │   └── PriceHistory.cs
+│   └── Interfaces/
+│       ├── IGenericRepository.cs
+│       └── IUnitOfWork.cs
+├── PMS.Infrastructure/
+│   ├── Data/
+│   │   ├── PmsDbContext.cs
+│   │   └── DbInitializer.cs
+│   └── Repositories/
+│       ├── GenericRepository.cs
+│       └── UnitOfWork.cs
+├── PMS.Web/ (temporary for migrations, later for UI)
+│   ├── appsettings.json
+│   └── Program.cs
+
+----------------------------------------------------
+* dotnet ef migrations add InitialCreate --project PMS.Infrastructure/PMS.Infrastructure.csproj --startup-project PMS.Web/PMS.Web.csproj --output-dir Migrations
+
+This does the following:
+Reads MiniCrmDbContext from MiniCRM.Infrastructure
+Uses appsettings.json and services from MiniCRM.Web
+Writes generated migration files into MiniCRM.Infrastructure/Migrations
+
+* dotnet ef database update --project PMS.Infrastructure/PMS.Infrastructure.csproj --startup-project PMS.Web/PMS.Web.csproj
+This command will:
+Connect to the database defined in appsettings.json
+Create tables for Customer, Contact, etc.
+
+* cd ..
+* dotnet build
+* cd PMS.Web
+* dotnet run
