@@ -2,6 +2,7 @@
 using PMS.Domain.Interfaces;
 using PMS.Infrastructure.Data;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace PMS.Infrastructure.Repositories
@@ -20,6 +21,11 @@ namespace PMS.Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

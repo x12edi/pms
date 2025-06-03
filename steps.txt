@@ -72,3 +72,50 @@ Create tables for Customer, Contact, etc.
 * dotnet build
 * cd PMS.Web
 * dotnet run
+----------------------------------------------------
+# Install AutoMapper packages
+dotnet add PMS.Application package AutoMapper
+----------------------------------------------------
+//only require if we want spa feature like react or other client side framework integration
+//dotnet add PMS.Web package Microsoft.AspNetCore.SpaServices.Extensions --version 8.0.0
+----------------------------------------------------
+# Navigate to PMS.Web/wwwroot
+cd PMS/PMS.Web/wwwroot
+
+# Create js/lib directory
+mkdir -p js/lib
+
+# Download jQuery
+curl -o js/lib/jquery-3.7.1.min.js https://code.jquery.com/jquery-3.7.1.min.js
+
+# Download DataTables Core
+curl -o js/lib/jquery.dataTables.min.js https://cdn.datatables.net/2.1.8/js/jquery.dataTables.min.js
+
+# Download DataTables Bootstrap 5
+curl -o js/lib/dataTables.bootstrap5.min.js https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js
+
+# Download Bootstrap
+curl -o js/lib/bootstrap.bundle.min.js https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
+-------------------
+# Navigate to PMS.Web/wwwroot
+cd PMS/PMS.Web/wwwroot
+
+# Create css/lib directory
+mkdir -p css/lib
+
+# Download Bootstrap CSS
+curl -o css/lib/bootstrap.min.css https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css
+
+# Download DataTables Bootstrap 5 CSS
+curl -o css/lib/dataTables.bootstrap5.min.css https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.min.css
+
+# Download Bootstrap Icons CSS
+curl -o css/lib/bootstrap-icons.css https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css
+
+# Verify js/lib files (re-download to ensure)
+mkdir -p js/lib
+curl -o js/lib/jquery-3.7.1.min.js https://code.jquery.com/jquery-3.7.1.min.js
+curl -o js/lib/jquery.dataTables.min.js https://cdn.datatables.net/2.1.8/js/jquery.dataTables.min.js
+curl -o js/lib/dataTables.bootstrap5.min.js https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js
+curl -o js/lib/bootstrap.bundle.js https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
+-----------------------------
