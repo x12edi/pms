@@ -1,80 +1,112 @@
 ﻿body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f7fa;
+    color: #2d3748;
+    font-size: 0.9rem;
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 15px;
 }
 
 .table th, .table td {
     vertical-align: middle;
     text-align: center;
+    padding: 8px;
+}
+
+.table th {
+    font-weight: 600;
 }
 
 .table .actions {
     white-space: nowrap;
 }
 
-.btn-icon {
-    margin-right: 8px;
+.btn-sm {
+    padding: 4px 8px;
+}
+
+.btn-outline-primary, .btn-outline-danger {
+    border-width: 1px;
+    padding: 3px 6px;
 }
 
 #modalMessage.error {
     color: #721c24;
-    background-color: #f8d7da;
-    padding: 12px;
-    border-radius: 4px;
+    background-color: #fef0f0;
+    padding: 8px;
+    border-radius: 3px;
     border: 1px solid #f5c6cb;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 #modalMessage.success {
     color: #155724;
-    background-color: #d4edda;
-    padding: 12px;
-    border-radius: 4px;
+    background-color: #e6f4ea;
+    padding: 8px;
+    border-radius: 3px;
     border: 1px solid #c3e6cb;
-    margin-top: 10px;
+    margin-top: 8px;
+}
+
+#alertMessage.alert-danger, #alertMessage.alert-success {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 3px;
+    font-size: 0.85rem;
 }
 
 .dataTables_wrapper .dataTables_filter input {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 6px 12px;
-    margin-left: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    padding: 4px 8px;
+    margin-left: 6px;
+    font-size: 0.85rem;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-    margin: 0 4px;
-    border-radius: 4px;
+    margin: 0 2px;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
 }
 
 .dataTables_wrapper .dataTables_length select {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    padding: 3px;
+    font-size: 0.85rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #edf2f7;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
     .table {
-        font-size: 14px;
+        font-size: 0.8rem;
     }
 
     .input-group {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
 
         .input-group .form-control,
         .input-group .btn {
             width: 100%;
+            font-size: 0.85rem;
         }
 
     .container {
         padding: 10px;
+    }
+
+    .modal-dialog {
+        margin: 10px;
     }
 }

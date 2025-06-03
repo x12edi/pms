@@ -23,7 +23,7 @@
                     };
                 },
                 error: function (xhr) {
-                    showModalMessage('Error', 'Failed to load transactions: ' + (xhr.responseText || 'Unknown error'), 'error');
+                    showMessage('Error', 'Failed to load transactions: ' + (xhr.responseText || 'Unknown error'), 'error', false);
                 }
             },
             columns: [
@@ -63,15 +63,16 @@
                     className: 'dt-center actions',
                     render: function (data) {
                         return `
-                            <button class="btn btn-sm btn-primary btn-edit" data-id="${data.id}">
-                                <i class="bi bi-pencil"></i> Edit
+                            <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${data.id}" title="Edit" data-bs-toggle="tooltip">
+                                <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="${data.id}">
-                                <i class="bi bi-trash"></i> Delete
+                            <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${data.id}" title="Delete" data-bs-toggle="tooltip">
+                                <i class="bi bi-trash"></i>
                             </button>
                         `;
                     },
-                    orderable: false
+                    orderable: false,
+                    width: '80px'
                 }
             ],
             pageLength: 10,
@@ -84,15 +85,27 @@
             aria: {
                 sortAscending: ': activate to sort column ascending',
                 sortDescending: ': activate to sort column descending'
+            },
+            drawCallback: function () {
+                $('[data-bs-toggle="tooltip"]').tooltip();
             }
         });
 
-        $('#transactionTable tbody').on('click', '.btn-edit', function () {
+        $('#transactionTable tbody').on('click', 'tr', function (e) {
+            if (!$(e.target).closest('.btn-edit, .btn-delete').length) {
+                let id = dataTable.row(this).data().id;
+                openEditModal(id);
+            }
+        });
+
+        $('#transactionTable tbody').on('click', '.btn-edit', function (e) {
+            e.stopPropagation();
             let id = $(this).data('id');
             openEditModal(id);
         });
 
-        $('#transactionTable tbody').on('click', '.btn-delete', function () {
+        $('#transactionTable tbody').on('click', '.btn-delete', function (e) {
+            e.stopPropagation();
             let id = $(this).data('id');
             if (confirm('Are you sure you want to delete this transaction?')) {
                 deleteTransaction(id);
@@ -100,10 +113,20 @@
         });
     }
 
-    function showModalMessage(title, message, type) {
-        const messageDiv = $('#modalMessage');
-        messageDiv.text(message).removeClass('error success').addClass(type);
-        setTimeout(() => messageDiv.text(''), 5000);
+    function showMessage(title, message, type, inModal = true) {
+        const messageDiv = inModal ? $('#modalMessage') : $('#alertMessage');
+        messageDiv.text(message)
+            .removeClass('error success alert-danger alert-success d-none')
+            .addClass(inModal ? type : `alert alert-${type === 'error' ? 'danger' : 'success'}`);
+        if (!inModal) {
+            messageDiv.removeClass('d-none');
+        }
+        setTimeout(() => {
+            messageDiv.text('');
+            if (!inModal) {
+                messageDiv.addClass('d-none');
+            }
+        }, 5000);
     }
 
     function resetAddModal() {
@@ -127,7 +150,7 @@
             $('#modalMessage').text('');
             $('#transactionModal').modal('show');
         }).fail(function (xhr) {
-            showModalMessage('Error', 'Failed to load transaction: ' + (xhr.responseText || 'Unknown error'), 'error');
+            showMessage('Error', 'Failed to load transaction: ' + (xhr.responseText || 'Unknown error'), 'error', false);
         });
     }
 
@@ -137,10 +160,10 @@
             type: 'DELETE',
             success: function () {
                 dataTable.ajax.reload();
-                showModalMessage('Success', 'Transaction deleted successfully.', 'success');
+                showMessage('Success', 'Transaction deleted successfully.', 'success', false);
             },
             error: function (xhr) {
-                showModalMessage('Error', 'Failed to delete transaction: ' + (xhr.responseText || 'Unknown error'), 'error');
+                showMessage('Error', 'Failed to delete transaction: ' + (xhr.responseText || 'Unknown error'), 'error', false);
             }
         });
     }
@@ -157,8 +180,12 @@
             fees: parseFloat($('#fees').val())
         };
 
+        if (id) {
+            transaction.id = parseInt(id);
+        }
+
         if (isNaN(transaction.holdingId) || isNaN(transaction.quantity) || isNaN(transaction.price) || isNaN(transaction.amount) || isNaN(transaction.fees)) {
-            showModalMessage('Error', 'Please fill all fields with valid numbers.', 'error');
+            showMessage('Error', 'Please fill all fields with valid numbers.', 'error', true);
             return;
         }
 
@@ -173,10 +200,10 @@
             success: function () {
                 $('#transactionModal').modal('hide');
                 dataTable.ajax.reload();
-                showModalMessage('Success', id ? 'Transaction updated successfully.' : 'Transaction created successfully.', 'success');
+                showMessage('Success', id ? 'Transaction updated successfully.' : 'Transaction created successfully.', 'success', false);
             },
             error: function (xhr) {
-                showModalMessage('Error', 'Failed to save transaction: ' + (xhr.responseText || 'Unknown error'), 'error');
+                showMessage('Error', 'Failed to save transaction: ' + (xhr.responseText || 'Unknown error'), 'error', true);
             }
         });
     });
@@ -184,9 +211,10 @@
     $('#addTransactionBtn').on('click', resetAddModal);
 
     $('#loadTransactionsBtn').on('click', function () {
-        const holdingId = parseInt($('#holdingId').val());
-        if (!holdingId || isNaN(holdingId)) {
-            showModalMessage('Error', 'Please enter a valid Holding ID.', 'error');
+        const holdingIdInput = $('#holdingId').val().trim();
+        const holdingId = parseInt(holdingIdInput);
+        if (!holdingIdInput || isNaN(holdingId) || holdingId <= 0) {
+            showMessage('Error', 'Please enter a valid Holding ID.', 'error', false);
             return;
         }
         initTable(holdingId);
