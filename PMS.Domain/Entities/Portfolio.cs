@@ -16,5 +16,7 @@ namespace PMS.Domain.Entities
         public List<Holding> Holdings { get; set; } = new();
         public List<Goal> Goals { get; set; } = new();
         public List<Allocation> Allocations { get; set; } = new();
+        public List<Report> Reports { get; set; } = new();
+        public List<Performance> Performances { get; set; } = new();
     }
 }

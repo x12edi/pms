@@ -20,7 +20,7 @@ namespace PMS.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PortfolioDto>>> GetAllPortfolios()
+        public async Task<ActionResult<IEnumerable<PortfolioDto>>> GetPortfolios()
         {
             var portfolios = await _portfolioService.GetAllPortfoliosAsync();
             return Ok(portfolios);

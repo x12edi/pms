@@ -34,6 +34,11 @@
     padding: 3px 6px;
 }
 
+.form-select, .form-control {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+}
+
 #modalMessage.error {
     color: #721c24;
     background-color: #fef0f0;
@@ -96,7 +101,7 @@
         gap: 8px;
     }
 
-        .input-group .form-control,
+        .input-group .form-select,
         .input-group .btn {
             width: 100%;
             font-size: 0.85rem;

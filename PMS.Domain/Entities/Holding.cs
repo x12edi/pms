@@ -15,5 +15,6 @@ namespace PMS.Domain.Entities
         public Portfolio Portfolio { get; set; }
         public Asset Asset { get; set; }
         public List<Transaction> Transactions { get; set; } = new();
+        public List<Performance> Performances { get; set; } = new();
     }
 }

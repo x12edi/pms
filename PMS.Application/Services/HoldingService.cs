@@ -20,10 +20,22 @@ namespace PMS.Application.Services
             _mapper = mapper;
         }
 
+        //public async Task<IEnumerable<HoldingDto>> GetHoldingsByPortfolioAsync(int portfolioId)
+        //{
+        //    var holdings = await _unitOfWork.Holdings.FindAsync(h => h.PortfolioId == portfolioId);
+        //    return _mapper.Map<IEnumerable<HoldingDto>>(holdings);
+        //}
+
         public async Task<IEnumerable<HoldingDto>> GetHoldingsByPortfolioAsync(int portfolioId)
         {
             var holdings = await _unitOfWork.Holdings.FindAsync(h => h.PortfolioId == portfolioId);
-            return _mapper.Map<IEnumerable<HoldingDto>>(holdings);
+            var assets = await _unitOfWork.Assets.GetAllAsync();
+            return holdings.Select(h => new HoldingDto
+            {
+                Id = h.Id,
+                PortfolioId = h.PortfolioId,
+                AssetName = assets.FirstOrDefault(a => a.Id == h.AssetId)?.Ticker
+            }).ToList();
         }
 
         public async Task<HoldingDto> GetHoldingByIdAsync(int id)

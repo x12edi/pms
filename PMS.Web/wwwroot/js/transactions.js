@@ -79,12 +79,10 @@
             responsive: true,
             language: {
                 search: 'Filter by Type:',
-                searchPlaceholder: 'e.g., Buy',
-                processing: 'Loading transactions...'
             },
             aria: {
                 sortAscending: ': activate to sort column ascending',
-                sortDescending: ': activate to sort column descending'
+                sortDescending: ': activate to sort column descending',
             },
             drawCallback: function () {
                 $('[data-bs-toggle="tooltip"]').tooltip();
@@ -168,6 +166,48 @@
         });
     }
 
+    function loadPortfolios() {
+        console.log('Portfolios start:');
+        $.get('/api/Portfolio').done(function (portfolios) {
+            console.log('Portfolios loaded:', portfolios);
+            const $portfolioId = $('#portfolioId');
+            $portfolioId.empty().append('<option value="">Select Portfolio</option>');
+            portfolios.forEach(function (portfolio) {
+                $portfolioId.append(`<option value="${portfolio.id}">${portfolio.name}</option>`);
+            });
+        }).fail(function (xhr) {
+            showMessage('Error', 'Failed to load portfolios: ' + (xhr.responseText || 'Unknown error'), 'error', false);
+        });
+    }
+
+    function loadHoldings(portfolioId) {
+        console.log('loadHoldings start:');
+        if (!portfolioId) {
+            $('#holdingId').empty().append('<option value="">Select Holding</option>');
+            return;
+        }
+        $.get(`/api/Holding/portfolio/${portfolioId}`).done(function (holdings) {
+            console.log('Holdings loaded for portfolio', portfolioId, ':', holdings);
+            const $holdingId = $('#holdingId');
+            $holdingId.empty().append('<option value="">Select Holding</option>');
+            holdings.forEach(function (holding) {
+                $holdingId.append(`<option value="${holding.id}">${holding.assetName}</option>`);
+            });
+            if (holdings.length > 0) {
+                $holdingId.val(holdings[0].id);
+                initTable(holdings[0].id);
+                $('#formHoldingId').val(holdings[0].id);
+            }
+        }).fail(function (xhr) {
+            showMessage('Error', 'Failed to load holdings: ' + (xhr.responseText || 'Unknown error'), 'error', false);
+        });
+    }
+
+    $('#portfolioId').on('change', function () {
+        const portfolioId = $(this).val();
+        loadHoldings(portfolioId);
+    });
+
     $('#transactionForm').on('submit', function (e) {
         e.preventDefault();
         const id = $('#transactionId').val();
@@ -211,14 +251,15 @@
     $('#addTransactionBtn').on('click', resetAddModal);
 
     $('#loadTransactionsBtn').on('click', function () {
-        const holdingIdInput = $('#holdingId').val().trim();
+        const holdingIdInput = $('#holdingId').val();
         const holdingId = parseInt(holdingIdInput);
         if (!holdingIdInput || isNaN(holdingId) || holdingId <= 0) {
-            showMessage('Error', 'Please enter a valid Holding ID.', 'error', false);
+            showMessage('Error', 'Please select a valid Holding ID.', 'error', false);
             return;
         }
         initTable(holdingId);
+        $('#formHoldingId').val(holdingIdInput);
     });
 
-    initTable(parseInt($('#holdingId').val()) || 1);
+    loadPortfolios();
 });
