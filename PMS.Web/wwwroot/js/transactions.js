@@ -66,13 +66,13 @@
                             <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${data.id}" title="Edit" data-bs-toggle="tooltip">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${data.id}" title="Delete" data-bs-toggle="tooltip">
+                            <button class="btn btn-sm btn-primary btn-delete" data-id="${data.id}" title="Delete" data-bs-toggle="tooltip">
                                 <i class="bi bi-trash"></i>
                             </button>
                         `;
                     },
                     orderable: false,
-                    width: '80px'
+                    width: 80
                 }
             ],
             pageLength: 10,
@@ -132,7 +132,10 @@
         $('#transactionForm')[0].reset();
         $('#transactionId').val('');
         $('#formHoldingId').val($('#holdingId').val());
+        $('#portfolioName').val($('#portfolioId option:selected').text() || 'No portfolio selected');
+        $('#holdingTicker').val($('#holdingId option:selected').text() || 'No holding selected');
         $('#modalMessage').text('');
+        $('#transactionModal').modal('show');
     }
 
     function openEditModal(id) {
@@ -140,6 +143,8 @@
             $('#transactionModalLabel').text('Edit Transaction');
             $('#transactionId').val(transaction.id);
             $('#formHoldingId').val(transaction.holdingId);
+            $('#portfolioName').val(transaction.portfolioName || 'Unknown');
+            $('#holdingTicker').val(transaction.holdingTicker || 'Unknown');
             $('#type').val(transaction.type);
             $('#quantity').val(transaction.quantity);
             $('#price').val(transaction.price);
@@ -167,7 +172,6 @@
     }
 
     function loadPortfolios() {
-        console.log('Portfolios start:');
         $.get('/api/Portfolio').done(function (portfolios) {
             console.log('Portfolios loaded:', portfolios);
             const $portfolioId = $('#portfolioId');
@@ -175,13 +179,17 @@
             portfolios.forEach(function (portfolio) {
                 $portfolioId.append(`<option value="${portfolio.id}">${portfolio.name}</option>`);
             });
+            if (portfolios.length > 0) {
+                $portfolioId.val(portfolios[0].id);
+                loadHoldings(portfolios[0].id);
+            }
         }).fail(function (xhr) {
+            console.error('Failed to load portfolios:', xhr.responseText || 'Unknown error');
             showMessage('Error', 'Failed to load portfolios: ' + (xhr.responseText || 'Unknown error'), 'error', false);
         });
     }
 
     function loadHoldings(portfolioId) {
-        console.log('loadHoldings start:');
         if (!portfolioId) {
             $('#holdingId').empty().append('<option value="">Select Holding</option>');
             return;
@@ -199,6 +207,7 @@
                 $('#formHoldingId').val(holdings[0].id);
             }
         }).fail(function (xhr) {
+            console.error('Failed to load holdings:', xhr.responseText || 'Unknown error');
             showMessage('Error', 'Failed to load holdings: ' + (xhr.responseText || 'Unknown error'), 'error', false);
         });
     }

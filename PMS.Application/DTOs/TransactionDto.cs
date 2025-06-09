@@ -12,5 +12,7 @@ namespace PMS.Application.DTOs
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public decimal Fees { get; set; }
+        public string? PortfolioName { get; set; }
+        public string? HoldingTicker { get; set; }
     }
 }
